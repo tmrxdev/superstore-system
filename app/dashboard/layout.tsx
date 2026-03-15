@@ -43,13 +43,12 @@ export default function DashboardLayout({
           <h1 className="text-2xl font-bold text-blue-400">Superstore</h1>
           <div className="flex items-center gap-4">
             <div className="text-sm">
-              <p className="text-foreground font-medium">{user?.email}</p>
-              <p className="text-muted-foreground">{user?.role}</p>
+              <p className="text-slate-200 font-medium">{user?.email}</p>
+              <p className="text-slate-400">{user?.role}</p>
             </div>
             <Button
               onClick={handleLogout}
-              variant="outline"
-              className="border-border hover:bg-muted"
+              className="glass-button"
             >
               Logout
             </Button>

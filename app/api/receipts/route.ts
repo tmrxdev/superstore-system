@@ -5,9 +5,13 @@ export async function GET(request: NextRequest) {
   try {
     const supabase = await createClient()
 
+    // Fetch receipts with their items
     const { data: receipts, error } = await supabase
       .from('receipts')
-      .select('*')
+      .select(`
+        *,
+        receipt_items (*)
+      `)
       .order('created_at', { ascending: false })
 
     if (error) {
@@ -18,7 +22,15 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    return NextResponse.json(receipts || [])
+    // Transform the data to include items as a string for display
+    const transformedReceipts = (receipts || []).map((receipt: any) => ({
+      ...receipt,
+      items: receipt.receipt_items
+        ?.map((item: any) => `${item.item_name} x${item.quantity}`)
+        .join(', ') || 'No items'
+    }))
+
+    return NextResponse.json(transformedReceipts)
   } catch (error) {
     console.error('Error in receipts GET:', error)
     return NextResponse.json(
@@ -41,12 +53,12 @@ export async function POST(request: NextRequest) {
 
     const supabase = await createClient()
 
-    const { data: receipt, error } = await supabase
+    // First create the receipt
+    const { data: receipt, error: receiptError } = await supabase
       .from('receipts')
       .insert([
         {
           customer_name,
-          items,
           total_price: parseFloat(total_price),
           is_paid: is_paid || false,
         }
@@ -54,15 +66,45 @@ export async function POST(request: NextRequest) {
       .select()
       .single()
 
-    if (error) {
-      console.error('Error creating receipt:', error)
+    if (receiptError) {
+      console.error('Error creating receipt:', receiptError)
       return NextResponse.json(
         { error: 'Failed to create receipt' },
         { status: 500 }
       )
     }
 
-    return NextResponse.json(receipt)
+    // Parse items string and create receipt_items entries
+    // Expected format: "Diamond x10, Emerald x5" or just "Diamond, Emerald"
+    const itemsList = items.split(',').map((item: string) => item.trim())
+    const receiptItems = itemsList.map((itemStr: string) => {
+      const match = itemStr.match(/^(.+?)\s*x\s*(\d+)$/i)
+      if (match) {
+        return {
+          receipt_id: receipt.id,
+          item_name: match[1].trim(),
+          quantity: parseInt(match[2]),
+          price_per_item: 0, // Price tracking is optional
+        }
+      }
+      return {
+        receipt_id: receipt.id,
+        item_name: itemStr,
+        quantity: 1,
+        price_per_item: 0,
+      }
+    })
+
+    const { error: itemsError } = await supabase
+      .from('receipt_items')
+      .insert(receiptItems)
+
+    if (itemsError) {
+      console.error('Error creating receipt items:', itemsError)
+      // Receipt was created, items failed - return receipt anyway
+    }
+
+    return NextResponse.json({ ...receipt, items })
   } catch (error) {
     console.error('Error in receipts POST:', error)
     return NextResponse.json(

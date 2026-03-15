@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Card } from '@/components/ui/card'
 
 interface Receipt {
   id: string
@@ -125,17 +124,17 @@ export default function ReceiptsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-foreground">Customer Receipts</h1>
-        <p className="text-muted-foreground mt-1">Track customer purchases and orders</p>
+        <h1 className="text-3xl font-bold text-blue-300">Customer Receipts</h1>
+        <p className="text-slate-400 mt-1">Track customer purchases and orders</p>
       </div>
 
       {/* Add Receipt Form */}
       {showForm && (
-        <Card className="p-6 border-border">
-          <h2 className="text-lg font-semibold text-foreground mb-4">Add New Receipt</h2>
+        <div className="glass-lg p-6">
+          <h2 className="text-lg font-semibold text-slate-100 mb-4">Add New Receipt</h2>
 
           {submitError && (
-            <div className="mb-4 p-3 bg-destructive/10 border border-destructive/30 rounded text-destructive text-sm">
+            <div className="mb-4 p-3 bg-red-500/20 border border-red-500/50 rounded-lg text-red-300 text-sm">
               {submitError}
             </div>
           )}
@@ -143,7 +142,7 @@ export default function ReceiptsPage() {
           <form onSubmit={handleAddReceipt} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
+                <label className="block text-sm font-medium text-slate-300 mb-2">
                   Customer Name
                 </label>
                 <Input
@@ -152,12 +151,12 @@ export default function ReceiptsPage() {
                   onChange={(e) => setCustomerName(e.target.value)}
                   placeholder="John Doe"
                   required
-                  className="bg-input border-border"
+                  className="glass bg-white/10 border-white/20 text-slate-200 placeholder-slate-500"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
+                <label className="block text-sm font-medium text-slate-300 mb-2">
                   Items Purchased
                 </label>
                 <Input
@@ -166,12 +165,12 @@ export default function ReceiptsPage() {
                   onChange={(e) => setItems(e.target.value)}
                   placeholder="Diamond x10, Emerald x5"
                   required
-                  className="bg-input border-border"
+                  className="glass bg-white/10 border-white/20 text-slate-200 placeholder-slate-500"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
+                <label className="block text-sm font-medium text-slate-300 mb-2">
                   Total Price ($)
                 </label>
                 <Input
@@ -181,7 +180,7 @@ export default function ReceiptsPage() {
                   onChange={(e) => setTotalPrice(e.target.value)}
                   placeholder="0.00"
                   required
-                  className="bg-input border-border"
+                  className="glass bg-white/10 border-white/20 text-slate-200 placeholder-slate-500"
                 />
               </div>
 
@@ -191,34 +190,33 @@ export default function ReceiptsPage() {
                     type="checkbox"
                     checked={isPaid}
                     onChange={(e) => setIsPaid(e.target.checked)}
-                    className="w-4 h-4 rounded border-border"
+                    className="w-4 h-4 rounded border-white/20"
                   />
-                  <span className="text-sm font-medium text-foreground">
+                  <span className="text-sm font-medium text-slate-300">
                     Payment Received
                   </span>
                 </label>
               </div>
             </div>
 
-            <div className="flex gap-2 pt-4 border-t border-border">
+            <div className="flex gap-2 pt-4 border-t border-white/10">
               <Button
                 type="button"
                 onClick={() => setShowForm(false)}
-                variant="outline"
-                className="border-border"
+                className="glass-button"
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
                 disabled={submitting}
-                className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                className="glass-button-primary"
               >
                 {submitting ? 'Adding...' : 'Add Receipt'}
               </Button>
             </div>
           </form>
-        </Card>
+        </div>
       )}
 
       {/* Search and Add Button */}
@@ -228,11 +226,11 @@ export default function ReceiptsPage() {
           placeholder="Search customers..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="bg-input border-border flex-1"
+          className="glass bg-white/10 border-white/20 text-slate-200 placeholder-slate-500 flex-1"
         />
         <Button
           onClick={() => setShowForm(!showForm)}
-          className="bg-primary hover:bg-primary/90 text-primary-foreground"
+          className="glass-button-primary"
         >
           {showForm ? 'Cancel' : 'Add Receipt'}
         </Button>
@@ -241,65 +239,65 @@ export default function ReceiptsPage() {
       {/* Receipts List */}
       <div className="space-y-4">
         {loading ? (
-          <Card className="p-8 border-border text-center">
-            <p className="text-muted-foreground">Loading receipts...</p>
-          </Card>
+          <div className="glass-lg p-8 text-center">
+            <p className="text-slate-400">Loading receipts...</p>
+          </div>
         ) : filteredCustomers.length === 0 ? (
-          <Card className="p-8 border-border text-center">
-            <p className="text-muted-foreground">
+          <div className="glass-lg p-8 text-center">
+            <p className="text-slate-400">
               {receipts.length === 0 ? 'No receipts yet' : 'No customers found'}
             </p>
-          </Card>
+          </div>
         ) : (
           filteredCustomers.map((customer) => (
-            <Card key={customer.customer_name} className="border-border overflow-hidden">
+            <div key={customer.customer_name} className="glass-lg overflow-hidden">
               <button
                 onClick={() =>
                   setExpandedCustomer(
                     expandedCustomer === customer.customer_name ? null : customer.customer_name
                   )
                 }
-                className="w-full p-4 text-left hover:bg-muted/50 transition flex items-center justify-between"
+                className="w-full p-4 text-left hover:bg-white/5 transition flex items-center justify-between"
               >
                 <div>
-                  <h3 className="font-semibold text-foreground text-lg">
+                  <h3 className="font-semibold text-slate-100 text-lg">
                     {customer.customer_name}
                   </h3>
-                  <p className="text-sm text-muted-foreground">
-                    {customer.order_count} order{customer.order_count !== 1 ? 's' : ''} • Total:
+                  <p className="text-sm text-slate-400">
+                    {customer.order_count} order{customer.order_count !== 1 ? 's' : ''} - Total:
                     ${customer.total_spent.toFixed(2)}
                   </p>
                   {customer.order_count >= 5 && (
-                    <span className="inline-block mt-1 px-2 py-1 bg-amber-500/20 text-amber-200 text-xs font-semibold rounded">
+                    <span className="inline-block mt-1 px-2 py-1 bg-amber-500/20 text-amber-300 text-xs font-semibold rounded">
                       VIP Member
                     </span>
                   )}
                 </div>
-                <span className="text-muted-foreground">
-                  {expandedCustomer === customer.customer_name ? '▼' : '▶'}
+                <span className="text-slate-400">
+                  {expandedCustomer === customer.customer_name ? '-' : '+'}
                 </span>
               </button>
 
               {expandedCustomer === customer.customer_name && (
-                <div className="border-t border-border bg-muted/50 p-4 space-y-3">
+                <div className="border-t border-white/10 bg-white/5 p-4 space-y-3">
                   {customer.receipts.map((receipt) => (
-                    <div key={receipt.id} className="p-3 bg-background rounded border border-border text-sm">
+                    <div key={receipt.id} className="p-3 glass-sm text-sm">
                       <div className="flex items-start justify-between mb-2">
                         <div>
-                          <p className="font-medium text-foreground">{receipt.items}</p>
-                          <p className="text-xs text-muted-foreground mt-1">
+                          <p className="font-medium text-slate-200">{receipt.items}</p>
+                          <p className="text-xs text-slate-500 mt-1">
                             {new Date(receipt.created_at).toLocaleDateString()}
                           </p>
                         </div>
                         <div className="text-right">
-                          <p className="font-semibold text-foreground">
+                          <p className="font-semibold text-blue-400">
                             ${receipt.total_price.toFixed(2)}
                           </p>
                           <span
                             className={`inline-block mt-1 px-2 py-0.5 rounded text-xs font-medium ${
                               receipt.is_paid
-                                ? 'bg-green-500/20 text-green-200'
-                                : 'bg-yellow-500/20 text-yellow-200'
+                                ? 'bg-green-500/20 text-green-300'
+                                : 'bg-yellow-500/20 text-yellow-300'
                             }`}
                           >
                             {receipt.is_paid ? 'Paid' : 'Pending'}
@@ -310,7 +308,7 @@ export default function ReceiptsPage() {
                   ))}
                 </div>
               )}
-            </Card>
+            </div>
           ))
         )}
       </div>

@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
           eligible_for_auto_discount,
           discount_percentage,
           vip_only: vip_only || false,
-          vip_discount: vip_discount || null,
+          vip_discount_percentage: vip_discount || null,
         },
       ])
       .select()

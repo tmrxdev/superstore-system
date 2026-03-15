@@ -36,11 +36,11 @@ export default function InventoryList({
       {items.map((item) => (
         <div key={item.id} className="glass-lg p-6 hover:border-blue-400/50 transition group">
           {item.image_url && (
-            <div className="mb-4 bg-white/5 border border-white/10 rounded p-4 flex items-center justify-center h-40">
+            <div className="mb-4 bg-white/5 border border-white/10 rounded-lg p-4 flex items-center justify-center h-40">
               <img
                 src={item.image_url}
                 alt={item.item_name}
-                className="h-32 w-32 object-contain group-hover:scale-110 transition"
+                className="h-32 w-32 object-contain group-hover:scale-110 transition rounded-lg"
                 onError={(e) => {
                   (e.target as HTMLImageElement).style.display = 'none'
                 }}
@@ -73,10 +73,10 @@ export default function InventoryList({
               </div>
             )}
 
-            {item.vip_discount && (
+            {item.vip_discount_percentage && (
               <div className="flex justify-between">
                 <span className="text-slate-400">VIP Discount:</span>
-                <span className="text-amber-300">{item.vip_discount}%</span>
+                <span className="text-amber-300">{item.vip_discount_percentage}%</span>
               </div>
             )}
 

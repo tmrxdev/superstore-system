@@ -61,6 +61,7 @@ export async function createUser(email: string, password: string, role: 'staff' 
         password_hash: passwordHash,
         role,
         created_by: createdBy || null,
+        first_login: true,
       },
     ])
     .select('id, email, role')

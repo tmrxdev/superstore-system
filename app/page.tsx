@@ -23,9 +23,11 @@ export default function ShopPage() {
       setLoading(true)
       const response = await fetch('/api/daily-deals')
       const data = await response.json()
-      setDailyDeals(data)
+      // Ensure we always have an array
+      setDailyDeals(Array.isArray(data) ? data : [])
     } catch (error) {
       console.error('Failed to fetch daily deals:', error)
+      setDailyDeals([])
     } finally {
       setLoading(false)
     }
@@ -243,7 +245,7 @@ function DailyDealCard({ deal }: { deal: any }) {
           <img
             src={item.image_url}
             alt={item.item_name}
-            className="h-32 w-32 object-contain group-hover:scale-110 transition"
+            className="h-32 w-32 object-contain group-hover:scale-110 transition rounded-lg"
             onError={(e) => {
               (e.target as HTMLImageElement).style.display = 'none'
             }}
@@ -298,7 +300,7 @@ function ShopItem({ item }: { item: any }) {
           <img
             src={item.image_url}
             alt={item.item_name}
-            className="h-24 w-24 object-contain group-hover:scale-110 transition"
+            className="h-24 w-24 object-contain group-hover:scale-110 transition rounded-lg"
             onError={(e) => {
               (e.target as HTMLImageElement).style.display = 'none'
             }}
