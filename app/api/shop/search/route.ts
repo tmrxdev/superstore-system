@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     if (!query) {
       const { data } = await supabase
         .from('inventory')
-        .select('id, item_name, image_url, price, stock')
+        .select('id, item_name, image_url, price, stock, vip_only')
         .gt('stock', 0)
         .limit(20)
 
@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
 
     const { data } = await supabase
       .from('inventory')
-      .select('id, item_name, image_url, price, stock')
+      .select('id, item_name, image_url, price, stock, vip_only')
       .ilike('item_name', `%${query}%`)
       .gt('stock', 0)
       .limit(20)

@@ -59,20 +59,20 @@ export default function InventoryPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
-        <h2 className="text-3xl font-bold text-foreground">Manage Inventory</h2>
+        <h2 className="text-3xl font-bold text-blue-300">Manage Inventory</h2>
         <Button
           onClick={() => {
             setEditingItem(null)
             setShowForm(!showForm)
           }}
-          className="bg-primary hover:bg-primary/90 text-primary-foreground"
+          className="glass-button-primary"
         >
           {showForm ? 'Close' : '+ Add Item'}
         </Button>
       </div>
 
       {showForm && (
-        <Card className="mb-8 p-6 border-primary/20">
+        <div className="glass-lg mb-8 p-6">
           <InventoryForm
             item={editingItem}
             onSave={handleSave}
@@ -81,18 +81,18 @@ export default function InventoryPage() {
               setEditingItem(null)
             }}
           />
-        </Card>
+        </div>
       )}
 
-      <Card className="mb-6 p-4 border-border">
+      <div className="glass-sm mb-6 p-4">
         <Input
           type="text"
           placeholder="Search items by name..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="bg-input border-border"
+          className="glass bg-white/10 border-white/20 text-slate-200 placeholder-slate-500"
         />
-      </Card>
+      </div>
 
       <InventoryList
         items={filteredItems}

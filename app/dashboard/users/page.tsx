@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
@@ -78,100 +77,103 @@ export default function UsersPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
-        <h2 className="text-3xl font-bold text-foreground">Manage Staff</h2>
+        <h2 className="text-3xl font-bold text-blue-300">Manage Staff</h2>
         <Button
           onClick={() => setShowForm(!showForm)}
-          className="bg-primary hover:bg-primary/90 text-primary-foreground"
+          className="glass-button-primary"
         >
           {showForm ? 'Close' : '+ Add Staff'}
         </Button>
       </div>
 
       {showForm && (
-        <Card className="mb-8 p-6 border-primary/20">
-          <h3 className="text-lg font-semibold text-foreground mb-4">Create New Staff Account</h3>
+        <div className="glass-lg mb-8 p-6">
+          <h3 className="text-lg font-semibold text-slate-100 mb-4">Create New Staff Account</h3>
 
           {error && (
-            <div className="mb-4 p-3 bg-destructive/10 border border-destructive/30 rounded text-destructive text-sm">
+            <div className="mb-4 p-3 bg-red-500/20 border border-red-500/50 rounded-lg text-red-300 text-sm">
               {error}
             </div>
           )}
 
           {success && (
-            <div className="mb-4 p-3 bg-primary/10 border border-primary/30 rounded text-primary text-sm">
+            <div className="mb-4 p-3 bg-green-500/20 border border-green-500/50 rounded-lg text-green-300 text-sm">
               {success}
             </div>
           )}
 
           <form onSubmit={handleCreateUser} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-foreground mb-2">Email</label>
+              <label className="block text-sm font-medium text-slate-300 mb-2">Email</label>
               <Input
                 type="email"
                 value={newUserEmail}
                 onChange={(e) => setNewUserEmail(e.target.value)}
                 placeholder="staff@example.com"
                 required
-                className="bg-input border-border"
+                className="glass bg-white/10 border-white/20 text-slate-200 placeholder-slate-500"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-foreground mb-2">Password</label>
+              <label className="block text-sm font-medium text-slate-300 mb-2">Password</label>
               <Input
                 type="password"
                 value={newUserPassword}
                 onChange={(e) => setNewUserPassword(e.target.value)}
                 placeholder="Generate a secure password"
                 required
-                className="bg-input border-border"
+                className="glass bg-white/10 border-white/20 text-slate-200 placeholder-slate-500"
               />
             </div>
 
             <div className="flex gap-2">
               <Button
                 type="submit"
-                className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                className="glass-button-primary"
               >
                 Create User
               </Button>
               <Button
                 type="button"
                 onClick={() => setShowForm(false)}
-                variant="outline"
-                className="border-border"
+                className="glass-button"
               >
                 Cancel
               </Button>
             </div>
           </form>
-        </Card>
+        </div>
       )}
 
       {loading ? (
-        <p className="text-muted-foreground">Loading...</p>
+        <p className="text-slate-400">Loading...</p>
       ) : (
-        <Card className="border-border overflow-hidden">
+        <div className="glass-lg overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-muted border-b border-border">
+              <thead className="bg-white/5 border-b border-white/10">
                 <tr>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-foreground">Email</th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-foreground">Role</th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-foreground">Created</th>
-                  <th className="px-6 py-3 text-right text-sm font-semibold text-foreground">Actions</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-slate-300">Email</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-slate-300">Role</th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-slate-300">Created</th>
+                  <th className="px-6 py-3 text-right text-sm font-semibold text-slate-300">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border">
+              <tbody className="divide-y divide-white/10">
                 {users.map((user) => (
-                  <tr key={user.id} className="hover:bg-muted/50 transition">
-                    <td className="px-6 py-4 text-foreground">{user.email}</td>
+                  <tr key={user.id} className="hover:bg-white/5 transition">
+                    <td className="px-6 py-4 text-slate-200">{user.email}</td>
                     <td className="px-6 py-4">
-                      <span className="px-3 py-1 bg-primary/10 text-primary text-xs font-medium rounded-full">
+                      <span className={`px-3 py-1 text-xs font-medium rounded-full ${
+                        user.role === 'superadmin' 
+                          ? 'bg-amber-500/20 text-amber-300' 
+                          : 'bg-blue-500/20 text-blue-300'
+                      }`}>
                         {user.role}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-muted-foreground text-sm">
+                    <td className="px-6 py-4 text-slate-400 text-sm">
                       {new Date(user.created_at).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 text-right">
@@ -179,8 +181,7 @@ export default function UsersPage() {
                         <Button
                           onClick={() => handleDeleteUser(user.id, user.email)}
                           size="sm"
-                          variant="outline"
-                          className="border-destructive text-destructive hover:bg-destructive/10"
+                          className="bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/50"
                         >
                           Delete
                         </Button>
@@ -191,7 +192,7 @@ export default function UsersPage() {
               </tbody>
             </table>
           </div>
-        </Card>
+        </div>
       )}
     </div>
   )
