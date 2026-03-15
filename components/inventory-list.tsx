@@ -17,30 +17,30 @@ export default function InventoryList({
   onDelete,
 }: InventoryListProps) {
   if (loading) {
-    return <p className="text-muted-foreground">Loading inventory...</p>
+    return <p className="text-slate-400">Loading inventory...</p>
   }
 
   if (items.length === 0) {
     return (
-      <Card className="p-12 border-border text-center">
-        <p className="text-muted-foreground mb-4">No items in inventory yet</p>
-        <p className="text-sm text-muted-foreground">
+      <div className="glass-lg p-12 text-center">
+        <p className="text-slate-300 mb-4">No items in inventory yet</p>
+        <p className="text-sm text-slate-400">
           Click "Add Item" to create your first inventory item
         </p>
-      </Card>
+      </div>
     )
   }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {items.map((item) => (
-        <Card key={item.id} className="p-6 border-border hover:border-primary/50 transition">
+        <div key={item.id} className="glass-lg p-6 hover:border-blue-400/50 transition group">
           {item.image_url && (
-            <div className="mb-4 bg-muted rounded p-4 flex items-center justify-center h-40">
+            <div className="mb-4 bg-white/5 border border-white/10 rounded p-4 flex items-center justify-center h-40">
               <img
                 src={item.image_url}
                 alt={item.item_name}
-                className="h-32 w-32 object-contain"
+                className="h-32 w-32 object-contain group-hover:scale-110 transition"
                 onError={(e) => {
                   (e.target as HTMLImageElement).style.display = 'none'
                 }}
@@ -48,58 +48,78 @@ export default function InventoryList({
             </div>
           )}
 
-          <h3 className="text-lg font-semibold text-foreground mb-2">{item.item_name}</h3>
+          <h3 className="text-lg font-semibold text-slate-100 mb-2">{item.item_name}</h3>
 
           <div className="space-y-2 mb-4 text-sm">
             <div className="flex justify-between">
-              <span className="text-muted-foreground">ID:</span>
-              <span className="font-mono text-foreground">{item.item_id}</span>
+              <span className="text-slate-400">ID:</span>
+              <span className="font-mono text-slate-300">{item.item_id}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Price:</span>
-              <span className="text-primary font-semibold">${item.price}</span>
+              <span className="text-slate-400">Price:</span>
+              <span className="text-blue-400 font-semibold">${item.price}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Stock:</span>
-              <span className={item.stock > 0 ? 'text-foreground' : 'text-destructive'}>
+              <span className="text-slate-400">Stock:</span>
+              <span className={item.stock > 0 ? 'text-slate-300' : 'text-red-400'}>
                 {item.stock} {item.stock === 0 && '(Out of stock)'}
               </span>
             </div>
 
-            {item.eligible_for_auto_discount && (
+            {item.vip_only && (
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Discount:</span>
-                <span className="text-accent">{item.discount_percentage}%</span>
+                <span className="text-slate-400">VIP Only:</span>
+                <span className="text-amber-400 font-semibold">Yes</span>
+              </div>
+            )}
+
+            {item.vip_discount && (
+              <div className="flex justify-between">
+                <span className="text-slate-400">VIP Discount:</span>
+                <span className="text-amber-300">{item.vip_discount}%</span>
               </div>
             )}
 
             {item.eligible_for_auto_discount && (
-              <div className="pt-2">
-                <span className="inline-block px-2 py-1 bg-accent/10 text-accent text-xs font-medium rounded">
-                  Daily Deal Eligible
-                </span>
+              <div className="flex justify-between">
+                <span className="text-slate-400">Daily Deal:</span>
+                <span className="text-blue-400">{item.discount_percentage}%</span>
+              </div>
+            )}
+
+            {(item.eligible_for_auto_discount || item.vip_only) && (
+              <div className="pt-2 flex flex-wrap gap-2">
+                {item.eligible_for_auto_discount && (
+                  <span className="inline-block px-2 py-1 bg-blue-500/20 text-blue-300 text-xs font-medium rounded">
+                    Daily Deal
+                  </span>
+                )}
+                {item.vip_only && (
+                  <span className="inline-block px-2 py-1 bg-amber-500/20 text-amber-300 text-xs font-medium rounded">
+                    VIP Only
+                  </span>
+                )}
               </div>
             )}
           </div>
 
-          <div className="flex gap-2 pt-4 border-t border-border">
+          <div className="flex gap-2 pt-4 border-t border-white/10">
             <Button
               onClick={() => onEdit(item)}
               size="sm"
-              className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground"
+              className="flex-1 glass-button-primary"
             >
               Edit
             </Button>
             <Button
               onClick={() => onDelete(item.id)}
               size="sm"
-              variant="outline"
-              className="flex-1 border-destructive text-destructive hover:bg-destructive/10"
+              className="flex-1 glass-button"
             >
               Delete
             </Button>
           </div>
-        </Card>
+        </div>
       ))}
     </div>
   )

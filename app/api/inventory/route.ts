@@ -32,6 +32,8 @@ export async function POST(request: NextRequest) {
       stock,
       eligible_for_auto_discount,
       discount_percentage,
+      vip_only,
+      vip_discount,
     } = body
 
     const supabase = await createClient()
@@ -46,6 +48,8 @@ export async function POST(request: NextRequest) {
           stock,
           eligible_for_auto_discount,
           discount_percentage,
+          vip_only: vip_only || false,
+          vip_discount: vip_discount || null,
         },
       ])
       .select()

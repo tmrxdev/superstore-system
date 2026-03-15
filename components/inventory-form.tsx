@@ -18,6 +18,8 @@ export default function InventoryForm({ item, onSave, onCancel }: InventoryFormP
   const [stock, setStock] = useState('')
   const [eligibleForDiscount, setEligibleForDiscount] = useState(false)
   const [discountPercentage, setDiscountPercentage] = useState('')
+  const [vipOnly, setVipOnly] = useState(false)
+  const [vipDiscount, setVipDiscount] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [blockImage, setBlockImage] = useState('')
@@ -31,6 +33,8 @@ export default function InventoryForm({ item, onSave, onCancel }: InventoryFormP
       setStock(item.stock.toString())
       setEligibleForDiscount(item.eligible_for_auto_discount)
       setDiscountPercentage(item.discount_percentage.toString())
+      setVipOnly(item.vip_only || false)
+      setVipDiscount(item.vip_discount ? item.vip_discount.toString() : '')
       setBlockImage(item.image_url || '')
     }
   }, [item])
@@ -76,6 +80,8 @@ export default function InventoryForm({ item, onSave, onCancel }: InventoryFormP
         stock: parseInt(stock),
         eligible_for_auto_discount: eligibleForDiscount,
         discount_percentage: discountPercentage ? parseInt(discountPercentage) : 0,
+        vip_only: vipOnly,
+        vip_discount: vipDiscount ? parseInt(vipDiscount) : null,
       }
 
       const url = item ? `/api/inventory/${item.id}` : '/api/inventory'
@@ -233,6 +239,43 @@ export default function InventoryForm({ item, onSave, onCancel }: InventoryFormP
                 placeholder="e.g., 20"
                 className="bg-input border-border"
               />
+            </div>
+          )}
+
+          <div>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={vipOnly}
+                onChange={(e) => setVipOnly(e.target.checked)}
+                className="w-4 h-4 rounded border-border"
+              />
+              <span className="text-sm font-medium text-foreground">
+                VIP Only Item
+              </span>
+            </label>
+            <p className="text-xs text-muted-foreground mt-1 ml-6">
+              Only VIP members can purchase this item
+            </p>
+          </div>
+
+          {vipOnly && (
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                VIP Discount (%)
+              </label>
+              <Input
+                type="number"
+                min="0"
+                max="100"
+                value={vipDiscount}
+                onChange={(e) => setVipDiscount(e.target.value)}
+                placeholder="e.g., 25"
+                className="bg-input border-border"
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                Additional discount for VIP members on this item
+              </p>
             </div>
           )}
         </div>
