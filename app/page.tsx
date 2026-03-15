@@ -107,7 +107,7 @@ export default function ShopPage() {
         {/* Search Results */}
         {showSearch && (
           <div className="mb-12">
-            <h2 className="text-2xl font-bold text-blue-300 mb-6">Search Results</h2>
+            <h2 className="text-2xl font-bold text-blue-300 mb-6">Search Results (Price per Stack)</h2>
             {searchResults.length === 0 ? (
               <div className="glass-lg p-12 text-center">
                 <p className="text-slate-300 mb-2">No items found</p>
@@ -155,7 +155,7 @@ export default function ShopPage() {
           <div>
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-3xl font-bold text-blue-400">Featured Deals</h2>
-              <p className="text-slate-400 text-sm">Limited time offers</p>
+              <p className="text-slate-400 text-sm">Limited time offers - Price is per stack</p>
             </div>
 
             {loading ? (
