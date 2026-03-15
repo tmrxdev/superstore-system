@@ -16,14 +16,23 @@ export async function POST(request: NextRequest) {
 
     const supabase = await createClient()
     
-    // Try to find staff user with matching PIN
-    const { data: staffUser, error: fetchError } = await supabase
-      .from('staff')
+    // Try to find user with matching PIN (stored as plain text for simplicity)
+    const { data: users, error: fetchError } = await supabase
+      .from('shop_users')
       .select('*')
-      .eq('pin', pin)
-      .single()
+      .eq('pin_hash', pin)
 
-    if (fetchError || !staffUser) {
+    if (fetchError) {
+      console.error('Login fetch error:', fetchError)
+      return NextResponse.json(
+        { error: 'Database error' },
+        { status: 500 }
+      )
+    }
+
+    const staffUser = users && users.length > 0 ? users[0] : null
+
+    if (!staffUser) {
       // Check if default PIN is being used (first login)
       if (pin === DEFAULT_PIN) {
         return NextResponse.json(
@@ -41,12 +50,22 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Check if first login (needs to change PIN)
+    if (staffUser.first_login) {
+      return NextResponse.json(
+        {
+          user: { id: staffUser.id, email: staffUser.email, role: staffUser.role },
+          firstLogin: true,
+        },
+        { status: 200 }
+      )
+    }
+
     return NextResponse.json({
       user: {
         id: staffUser.id,
         email: staffUser.email,
         role: staffUser.role,
-        name: staffUser.name,
       },
     })
   } catch (error) {
