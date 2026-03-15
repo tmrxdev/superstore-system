@@ -7,47 +7,32 @@ export async function GET(request: NextRequest) {
     const today = new Date().toISOString().split('T')[0]
 
     // Check if daily deals already exist for today
-    const { data: existingDeals, error: checkError } = await supabase
+    const { data: existingDeals } = await supabase
       .from('daily_deals')
       .select('id')
       .eq('deal_date', today)
 
-    if (checkError) {
-      console.error('Error checking deals:', checkError)
-      return NextResponse.json([])
-    }
-
     if (existingDeals && existingDeals.length > 0) {
       // Return existing deals for today
-      const { data: deals, error: fetchError } = await supabase
+      const { data: deals } = await supabase
         .from('daily_deals')
         .select(`
           id,
           discount_percentage,
-          inventory:inventory_id(id, item_name, image_url, price, stock, vip_only)
+          inventory:inventory_id(*)
         `)
         .eq('deal_date', today)
         .order('created_at', { ascending: false })
-
-      if (fetchError) {
-        console.error('Error fetching deals:', fetchError)
-        return NextResponse.json([])
-      }
 
       return NextResponse.json(deals || [])
     }
 
     // Generate new daily deals
-    const { data: eligibleItems, error: eligibleError } = await supabase
+    const { data: eligibleItems } = await supabase
       .from('inventory')
       .select('id')
       .eq('eligible_for_auto_discount', true)
       .gt('stock', 0)
-
-    if (eligibleError) {
-      console.error('Error fetching eligible items:', eligibleError)
-      return NextResponse.json([])
-    }
 
     if (!eligibleItems || eligibleItems.length === 0) {
       return NextResponse.json([])
@@ -69,23 +54,23 @@ export async function GET(request: NextRequest) {
       deal_date: today,
     }))
 
-    const { data: createdDeals, error: createError } = await supabase
+    const { data: createdDeals, error } = await supabase
       .from('daily_deals')
       .insert(deals)
       .select(`
         id,
         discount_percentage,
-        inventory:inventory_id(id, item_name, image_url, price, stock, vip_only)
+        inventory:inventory_id(*)
       `)
 
-    if (createError) {
-      console.error('Error creating deals:', createError)
-      return NextResponse.json([])
-    }
+    if (error) throw error
 
     return NextResponse.json(createdDeals || [])
   } catch (error) {
     console.error('Failed to fetch/generate daily deals:', error)
-    return NextResponse.json([])
+    return NextResponse.json(
+      { error: 'Failed to fetch daily deals' },
+      { status: 500 }
+    )
   }
 }

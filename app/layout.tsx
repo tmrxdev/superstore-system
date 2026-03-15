@@ -7,8 +7,8 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'Superstore',
-  description: 'A modern, elegant online superstore with VIP benefits',
+  title: 'Minecraft Shop',
+  description: 'A modern Minecraft block and item shop',
   generator: 'v0.app',
   icons: {
     icon: [

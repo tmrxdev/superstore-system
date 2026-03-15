@@ -4,7 +4,6 @@ import { useEffect, useState, useRef } from 'react'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import Footer from '@/components/footer'
 
 export default function ShopPage() {
   const [dailyDeals, setDailyDeals] = useState<any[]>([])
@@ -23,11 +22,9 @@ export default function ShopPage() {
       setLoading(true)
       const response = await fetch('/api/daily-deals')
       const data = await response.json()
-      // Ensure we always have an array
-      setDailyDeals(Array.isArray(data) ? data : [])
+      setDailyDeals(data)
     } catch (error) {
       console.error('Failed to fetch daily deals:', error)
-      setDailyDeals([])
     } finally {
       setLoading(false)
     }
@@ -64,17 +61,17 @@ export default function ShopPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex flex-col">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="glass border-b border-white/10 sticky top-0 z-50 backdrop-blur-xl">
+      <header className="bg-card border-b border-border sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between mb-6">
-            <h1 className="text-3xl font-bold text-blue-400">Superstore</h1>
+            <h1 className="text-3xl font-bold text-primary">⛏️ Minecraft Shop</h1>
             <a
               href="/auth/login"
-              className="glass-button-primary font-medium text-sm"
+              className="px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg font-medium text-sm"
             >
-              Staff Portal
+              Staff Login
             </a>
           </div>
 
@@ -82,10 +79,10 @@ export default function ShopPage() {
           <div className="relative">
             <Input
               type="text"
-              placeholder="Search items..."
+              placeholder="Search for blocks and items..."
               value={searchQuery}
               onChange={(e) => handleSearch(e.target.value)}
-              className="w-full glass bg-white/10 border-white/20 text-slate-200 placeholder-slate-500 text-base py-3"
+              className="w-full bg-input border-border text-lg py-3"
             />
             {searchQuery && (
               <button
@@ -94,27 +91,27 @@ export default function ShopPage() {
                   setSearchResults([])
                   setShowSearch(false)
                 }}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-200"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
               >
-                ×
+                ✕
               </button>
             )}
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-grow">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Search Results */}
         {showSearch && (
           <div className="mb-12">
-            <h2 className="text-2xl font-bold text-blue-300 mb-6">Search Results</h2>
+            <h2 className="text-2xl font-bold text-foreground mb-6">Search Results</h2>
             {searchResults.length === 0 ? (
-              <div className="glass-lg p-12 text-center">
-                <p className="text-slate-300 mb-2">No items found</p>
-                <p className="text-sm text-slate-400">
-                  Try searching with a different name or clear the search to see featured deals
+              <Card className="p-12 border-border text-center">
+                <p className="text-muted-foreground mb-2">No items found</p>
+                <p className="text-sm text-muted-foreground">
+                  Try searching with a different name or clear the search to see daily deals
                 </p>
-              </div>
+              </Card>
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {searchResults.map((item) => (
@@ -125,50 +122,25 @@ export default function ShopPage() {
           </div>
         )}
 
-        {/* VIP Section */}
-        {!showSearch && (
-          <div className="mb-12">
-            <h2 className="text-3xl font-bold text-blue-300 mb-6">VIP Benefits</h2>
-            <div className="grid md:grid-cols-2 gap-6 mb-12">
-              <div className="glass-lg p-8">
-                <h3 className="text-xl font-semibold text-blue-300 mb-4">VIP Exclusive Deals</h3>
-                <p className="text-slate-300 mb-4">Get special discounts on premium items available only to VIP members.</p>
-                <ul className="space-y-2 text-slate-400 text-sm">
-                  <li>• Up to 25% off on VIP-exclusive items</li>
-                  <li>• Premium product access</li>
-                  <li>• Priority stock availability</li>
-                </ul>
-              </div>
-              <div className="glass-lg p-8">
-                <h3 className="text-xl font-semibold text-blue-300 mb-4">How to Get VIP</h3>
-                <p className="text-slate-300 mb-4">Earn VIP status by making purchases with us.</p>
-                <div className="bg-white/5 border border-white/10 rounded-lg p-4 text-slate-300 text-sm">
-                  Complete <span className="text-blue-300 font-semibold">5 purchases in one month</span> to automatically unlock VIP benefits and exclusive deals.
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Daily Deals Section */}
         {!showSearch && (
           <div>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-3xl font-bold text-blue-400">Featured Deals</h2>
-              <p className="text-slate-400 text-sm">Limited time offers</p>
+              <h2 className="text-3xl font-bold text-primary">🎁 Daily Deals</h2>
+              <p className="text-muted-foreground text-sm">Limited time offers</p>
             </div>
 
             {loading ? (
-              <div className="glass-lg p-12 text-center">
-                <p className="text-slate-400">Loading deals...</p>
-              </div>
+              <Card className="p-12 border-border text-center">
+                <p className="text-muted-foreground">Loading deals...</p>
+              </Card>
             ) : dailyDeals.length === 0 ? (
-              <div className="glass-lg p-12 text-center">
-                <p className="text-slate-300 mb-2">No daily deals available</p>
-                <p className="text-sm text-slate-400">
+              <Card className="p-12 border-border text-center">
+                <p className="text-muted-foreground mb-2">No daily deals available</p>
+                <p className="text-sm text-muted-foreground">
                   Come back tomorrow for fresh deals!
                 </p>
-              </div>
+              </Card>
             ) : (
               <div className="relative">
                 {/* Carousel */}
@@ -192,14 +164,14 @@ export default function ShopPage() {
                   <>
                     <button
                       onClick={() => scrollCarousel('left')}
-                      className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-4 glass-button z-10"
+                      className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-4 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full p-2 z-10"
                       aria-label="Scroll left"
                     >
                       ←
                     </button>
                     <button
                       onClick={() => scrollCarousel('right')}
-                      className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-4 glass-button z-10"
+                      className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-4 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full p-2 z-10"
                       aria-label="Scroll right"
                     >
                       →
@@ -211,8 +183,6 @@ export default function ShopPage() {
           </div>
         )}
       </main>
-
-      <Footer />
     </div>
   )
 }
@@ -224,111 +194,96 @@ function DailyDealCard({ deal }: { deal: any }) {
 
   const originalPrice = item.price
   const discountedPrice = (originalPrice * (100 - deal.discount_percentage)) / 100
-  const isVipOnly = item.vip_only
 
   return (
-    <div className="glass-lg p-6 group cursor-pointer h-full flex flex-col relative overflow-hidden">
+    <Card className="p-4 border-accent/50 bg-gradient-to-br from-card to-muted hover:border-accent transition group cursor-pointer h-full flex flex-col">
       {/* Deal Badge */}
-      <div className="absolute top-4 right-4 bg-blue-500/40 border border-blue-400/60 text-blue-100 px-3 py-1 rounded-full text-sm font-bold">
+      <div className="absolute top-4 right-4 bg-accent text-accent-foreground px-3 py-1 rounded-full text-sm font-bold">
         -{deal.discount_percentage}%
       </div>
 
-      {isVipOnly && (
-        <div className="absolute top-4 left-4 bg-amber-500/40 border border-amber-400/60 text-amber-100 px-2 py-1 rounded text-xs font-semibold">
-          VIP ONLY
-        </div>
-      )}
-
       {/* Image */}
-      <div className="bg-white/5 border border-white/10 rounded-lg p-4 flex items-center justify-center h-40 mb-4 overflow-hidden">
+      <div className="bg-muted rounded p-4 flex items-center justify-center h-40 mb-4 overflow-hidden">
         {item.image_url ? (
           <img
             src={item.image_url}
             alt={item.item_name}
-            className="h-32 w-32 object-contain group-hover:scale-110 transition rounded-lg"
+            className="h-32 w-32 object-contain group-hover:scale-110 transition"
             onError={(e) => {
               (e.target as HTMLImageElement).style.display = 'none'
             }}
           />
         ) : (
-          <div className="text-slate-500 text-sm">No image</div>
+          <div className="text-muted-foreground">No image</div>
         )}
       </div>
 
       {/* Item Name */}
-      <h3 className="text-lg font-bold text-slate-100 mb-2">{item.item_name}</h3>
+      <h3 className="text-lg font-bold text-foreground mb-2">{item.item_name}</h3>
 
       {/* Stock */}
-      <p className="text-sm text-slate-400 mb-4 flex-grow">
+      <p className="text-sm text-muted-foreground mb-4 flex-grow">
         {item.stock > 0 ? `${item.stock} in stock` : 'Out of stock'}
       </p>
 
       {/* Price */}
-      <div className="pt-4 border-t border-white/10">
+      <div className="pt-4 border-t border-border">
         <div className="flex items-center gap-3 mb-4">
           <div>
-            <p className="text-xs text-slate-500 line-through">${originalPrice.toFixed(2)}</p>
-            <p className="text-2xl font-bold text-blue-400">${discountedPrice.toFixed(2)}</p>
+            <p className="text-xs text-muted-foreground line-through">${originalPrice.toFixed(2)}</p>
+            <p className="text-2xl font-bold text-accent">${discountedPrice.toFixed(2)}</p>
           </div>
         </div>
 
         <Button
           disabled={item.stock === 0}
-          className="w-full glass-button-primary disabled:opacity-50"
+          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground disabled:opacity-50"
         >
-          {item.stock > 0 ? 'View' : 'Out of Stock'}
+          {item.stock > 0 ? 'Add to Cart' : 'Out of Stock'}
         </Button>
       </div>
-    </div>
+    </Card>
   )
 }
 
 function ShopItem({ item }: { item: any }) {
-  const isVipOnly = item.vip_only
-
   return (
-    <div className="glass-sm p-4 hover:border-blue-400/50 transition group cursor-pointer h-full flex flex-col relative">
-      {isVipOnly && (
-        <div className="absolute top-2 right-2 bg-amber-500/40 border border-amber-400/60 text-amber-100 px-2 py-0.5 rounded text-xs font-semibold">
-          VIP
-        </div>
-      )}
-
+    <Card className="p-4 border-border hover:border-primary/50 transition group cursor-pointer h-full flex flex-col">
       {/* Image */}
-      <div className="bg-white/5 border border-white/10 rounded p-3 flex items-center justify-center h-32 mb-3 overflow-hidden">
+      <div className="bg-muted rounded p-3 flex items-center justify-center h-32 mb-3 overflow-hidden">
         {item.image_url ? (
           <img
             src={item.image_url}
             alt={item.item_name}
-            className="h-24 w-24 object-contain group-hover:scale-110 transition rounded-lg"
+            className="h-24 w-24 object-contain group-hover:scale-110 transition"
             onError={(e) => {
               (e.target as HTMLImageElement).style.display = 'none'
             }}
           />
         ) : (
-          <div className="text-slate-500 text-xs">No image</div>
+          <div className="text-muted-foreground text-xs">No image</div>
         )}
       </div>
 
       {/* Item Name */}
-      <h3 className="text-sm font-semibold text-slate-200 mb-2 line-clamp-2">{item.item_name}</h3>
+      <h3 className="text-sm font-semibold text-foreground mb-2 line-clamp-2">{item.item_name}</h3>
 
       {/* Stock */}
-      <p className="text-xs text-slate-400 mb-3 flex-grow">
+      <p className="text-xs text-muted-foreground mb-3 flex-grow">
         {item.stock > 0 ? `${item.stock} in stock` : 'Out of stock'}
       </p>
 
       {/* Price and Button */}
-      <div className="pt-3 border-t border-white/10">
-        <p className="text-lg font-bold text-blue-400 mb-2">${item.price.toFixed(2)}</p>
+      <div className="pt-3 border-t border-border">
+        <p className="text-lg font-bold text-primary mb-2">${item.price.toFixed(2)}</p>
         <Button
           disabled={item.stock === 0}
           size="sm"
-          className="w-full glass-button-primary disabled:opacity-50 text-xs"
+          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground disabled:opacity-50"
         >
-          {item.stock > 0 ? 'View' : 'Out'}
+          {item.stock > 0 ? 'Buy' : 'Out'}
         </Button>
       </div>
-    </div>
+    </Card>
   )
 }

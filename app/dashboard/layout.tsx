@@ -32,23 +32,24 @@ export default function DashboardLayout({
   }
 
   if (loading) {
-    return <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center text-slate-300">Loading...</div>
+    return <div className="min-h-screen bg-background flex items-center justify-center">Loading...</div>
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="glass border-b border-white/10 sticky top-0 z-50 backdrop-blur-xl">
+      <header className="bg-card border-b border-border sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-blue-400">Superstore</h1>
+          <h1 className="text-2xl font-bold text-primary">⛏️ Minecraft Shop</h1>
           <div className="flex items-center gap-4">
             <div className="text-sm">
-              <p className="text-slate-200 font-medium">{user?.email}</p>
-              <p className="text-slate-400">{user?.role}</p>
+              <p className="text-foreground font-medium">{user?.email}</p>
+              <p className="text-muted-foreground">{user?.role}</p>
             </div>
             <Button
               onClick={handleLogout}
-              className="glass-button"
+              variant="outline"
+              className="border-border hover:bg-muted"
             >
               Logout
             </Button>
@@ -57,22 +58,19 @@ export default function DashboardLayout({
       </header>
 
       {/* Navigation */}
-      <nav className="glass border-b border-white/10 backdrop-blur-xl">
+      <nav className="bg-card border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex gap-4">
           <NavLink href="/dashboard" active={pathname === '/dashboard'}>
             Dashboard
           </NavLink>
-          <NavLink href="/dashboard/inventory" active={pathname === '/dashboard/inventory'}>
-            Inventory
-          </NavLink>
-          <NavLink href="/dashboard/receipts" active={pathname === '/dashboard/receipts'}>
-            Receipts
-          </NavLink>
           {user?.role === 'superadmin' && (
             <NavLink href="/dashboard/users" active={pathname === '/dashboard/users'}>
-              Users
+              Manage Users
             </NavLink>
           )}
+          <NavLink href="/dashboard/inventory" active={pathname === '/dashboard/inventory'}>
+            Manage Inventory
+          </NavLink>
         </div>
       </nav>
 
@@ -90,8 +88,8 @@ function NavLink({ href, active, children }: { href: string; active: boolean; ch
       href={href}
       className={`px-4 py-3 border-b-2 font-medium transition ${
         active
-          ? 'border-blue-400 text-blue-300'
-          : 'border-transparent text-slate-400 hover:text-slate-200'
+          ? 'border-primary text-primary'
+          : 'border-transparent text-muted-foreground hover:text-foreground'
       }`}
     >
       {children}
